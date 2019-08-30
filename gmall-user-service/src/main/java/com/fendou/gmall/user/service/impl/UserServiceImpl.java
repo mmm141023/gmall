@@ -1,5 +1,6 @@
 package com.fendou.gmall.user.service.impl;
 
+import com.fendou.gmall.UserService;
 import org.apache.dubbo.config.annotation.Service;
 
 /**
@@ -10,5 +11,9 @@ import org.apache.dubbo.config.annotation.Service;
  */
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
+    @Override
+    public String getAllUser() {
+        return "hello world";
+    }
 }

@@ -48,6 +48,8 @@
 
     <dependencyManagement>
         <dependencies>
+
+
             <!-- Spring Boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -64,6 +66,11 @@
                 <version>${dubbo.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -108,7 +115,6 @@
                 <artifactId>batik-ext</artifactId>
                 <version>${batik-ext.version}</version>
             </dependency>
-
             <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
             <dependency>
                 <groupId>org.jsoup</groupId>
