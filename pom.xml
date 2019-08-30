@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>gmall_common_util</module>
         <module>gmall-web-util</module>
         <module>gmall-service-util</module>
         <module>gmall-api</module>
+        <module>gmall-common-util</module>
     </modules>
 
     <properties>
