@@ -21,8 +21,13 @@ public class UserController {
     UserService userService;
 
     @ResponseBody
-    @RequestMapping("/index")
-    public String helloWorld() {
+    @RequestMapping("/getAll")
+    public List<UmsMember> helloWorld() {
         return userService.getAllUser();
+    }
+    @ResponseBody
+    @RequestMapping("/index")
+    public List<UmsMember> getAllUser() {
+        return userService.getAllUser2();
     }
 }

@@ -12,5 +12,6 @@ import java.util.List;
  */
 
 public interface UserService {
-    public String getAllUser();
+    public List<UmsMember> getAllUser();
+    public List<UmsMember> getAllUser2();
 }

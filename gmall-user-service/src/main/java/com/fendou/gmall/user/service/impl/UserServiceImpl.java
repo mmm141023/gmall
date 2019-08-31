@@ -22,7 +22,12 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public String getAllUser() {
-        return "helloworld";
+    public List<UmsMember> getAllUser() {
+        return userMapper.getAllUser();
+    }
+
+    @Override
+    public List<UmsMember> getAllUser2() {
+        return userMapper.selectAll();
     }
 }
