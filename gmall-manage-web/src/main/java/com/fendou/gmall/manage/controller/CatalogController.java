@@ -4,6 +4,7 @@ import com.fendou.gmall.bean.PmsBaseCatalog1;
 import com.fendou.gmall.service.CatalogService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2019/8/31
  */
 @Controller
+@CrossOrigin
 public class CatalogController {
     @Reference
     CatalogService catalogService;
