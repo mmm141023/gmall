@@ -1,6 +1,7 @@
 package com.fendou.gmall.manage.controller;
 
 import com.fendou.gmall.bean.PmsBaseAttrInfo;
+import com.fendou.gmall.bean.PmsBaseAttrValue;
 import com.fendou.gmall.service.AttrService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
@@ -44,5 +45,11 @@ public class AttrController {
     public String saveAttrInfo(@RequestBody PmsBaseAttrInfo pmsBaseAttrInfo) {
         return attrService.saveAttrInfo(pmsBaseAttrInfo);
     }
+    @ResponseBody
+    @RequestMapping("/getAttrValueList")
+    public List<PmsBaseAttrValue> getAttrValueList(String attrId) {
+        return attrService.getAttrValueList(attrId);
+    }
+
 
 }

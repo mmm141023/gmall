@@ -71,4 +71,12 @@ public class AttrServiceImpl implements AttrService {
         }
         return "success";
     }
+
+    @Override
+    public List<PmsBaseAttrValue> getAttrValueList(String attrId) {
+        PmsBaseAttrValue pmsBaseAttrValue = new PmsBaseAttrValue();
+        pmsBaseAttrValue.setAttrId(attrId);
+        List<PmsBaseAttrValue> pmsBaseAttrValues = attrValueMapper.select(pmsBaseAttrValue);
+        return pmsBaseAttrValues;
+    }
 }
