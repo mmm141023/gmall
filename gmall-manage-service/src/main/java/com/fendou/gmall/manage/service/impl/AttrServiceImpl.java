@@ -5,9 +5,12 @@ import com.fendou.gmall.bean.PmsBaseAttrValue;
 import com.fendou.gmall.manage.dao.AttrInfoMapper;
 import com.fendou.gmall.manage.dao.AttrValueMapper;
 import com.fendou.gmall.service.AttrService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import tk.mybatis.mapper.entity.Example;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -33,13 +36,38 @@ public class AttrServiceImpl implements AttrService {
 
     @Override
     public String saveAttrInfo(PmsBaseAttrInfo pmsBaseAttrInfo) {
-        // 保存平台属性
-        attrInfoMapper.insertSelective(pmsBaseAttrInfo);
-        // 保存平台属性值
         List<PmsBaseAttrValue> attrValueList = pmsBaseAttrInfo.getAttrValueList();
-        for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
-            pmsBaseAttrValue.setAttrId(pmsBaseAttrInfo.getId());
-            attrValueMapper.insertSelective(pmsBaseAttrValue);
+        String attrName = pmsBaseAttrInfo.getAttrName();
+        PmsBaseAttrInfo pmsBaseAttrInfo1 = new PmsBaseAttrInfo();
+        pmsBaseAttrInfo1.setAttrName(attrName);
+        if (attrInfoMapper.select(pmsBaseAttrInfo1) == null) {
+            // 保存平台属性
+            attrInfoMapper.insertSelective(pmsBaseAttrInfo);
+            // 保存平台属性值
+            for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                pmsBaseAttrValue.setAttrId(pmsBaseAttrInfo.getId());
+                attrValueMapper.insertSelective(pmsBaseAttrValue);
+            }
+        }else {
+            // 执行修改操作
+            Example example = new Example(PmsBaseAttrInfo.class);
+            example.createCriteria().andEqualTo("attrName", attrName);
+            List<PmsBaseAttrInfo> pmsBaseAttrInfos = attrInfoMapper.selectByExample(example);
+            String id = "";
+            if (pmsBaseAttrInfos.size() > 0) {
+                id = pmsBaseAttrInfos.get(0).getId();
+                attrInfoMapper.deleteByExample(example);
+
+            }
+            attrInfoMapper.insertSelective(pmsBaseAttrInfo);
+            // 修改属性值
+            for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                Example example1 = new Example(PmsBaseAttrValue.class);
+                example1.createCriteria().andEqualTo("attrId", id);
+                attrValueMapper.deleteByExample(example1);
+                pmsBaseAttrValue.setAttrId(pmsBaseAttrInfo.getId());
+                attrValueMapper.insertSelective(pmsBaseAttrValue);
+            }
         }
         return "success";
     }
