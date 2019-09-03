@@ -1,9 +1,7 @@
 package com.fendou.gmall.manage.service.impl;
 
-import com.fendou.gmall.bean.PmsBaseSaleAttr;
-import com.fendou.gmall.bean.PmsProductInfo;
-import com.fendou.gmall.manage.dao.PmsBaseSaleAttrMapper;
-import com.fendou.gmall.manage.dao.PmsProductInfoMapper;
+import com.fendou.gmall.bean.*;
+import com.fendou.gmall.manage.dao.*;
 import com.fendou.gmall.service.SpuService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,12 @@ public class SpuServiceImpl implements SpuService {
     PmsProductInfoMapper pmsProductInfoMapper;
     @Autowired
     PmsBaseSaleAttrMapper pmsBaseSaleAttrMapper;
-
+    @Autowired
+    PmsProductImageMapper pmsProductImageMapper;
+    @Autowired
+    PmsProductSaleAttrMapper pmsProductSaleAttrMapper;
+    @Autowired
+    PmsProductSaleAttrValueMapper pmsProductSaleAttrValueMapper;
     /**
      * 展示商品spu列表
      * @param catalog3Id
@@ -52,7 +55,22 @@ public class SpuServiceImpl implements SpuService {
      */
     @Override
     public String saveSpuInfo(PmsProductInfo pmsProductInfo) {
-
+        pmsProductInfoMapper.insertSelective(pmsProductInfo);
+        List<PmsProductImage> spuImageList = pmsProductInfo.getSpuImageList();
+        List<PmsProductSaleAttr> spuSaleAttrList = pmsProductInfo.getSpuSaleAttrList();
+        for (PmsProductImage pmsProductImage : spuImageList) {
+            pmsProductImage.setProductId(pmsProductInfo.getId());
+            pmsProductImageMapper.insertSelective(pmsProductImage);
+        }
+        for (PmsProductSaleAttr pmsProductSaleAttr : spuSaleAttrList) {
+            pmsProductSaleAttr.setProductId(pmsProductInfo.getId());
+            pmsProductSaleAttrMapper.insertSelective(pmsProductSaleAttr);
+            List<PmsProductSaleAttrValue> spuSaleAttrValueList = pmsProductSaleAttr.getSpuSaleAttrValueList();
+            for (PmsProductSaleAttrValue pmsProductSaleAttrValue : spuSaleAttrValueList) {
+                pmsProductSaleAttrValue.setProductId(pmsProductInfo.getId());
+                pmsProductSaleAttrValueMapper.insertSelective(pmsProductSaleAttrValue);
+            }
+        }
         return "success";
     }
 }

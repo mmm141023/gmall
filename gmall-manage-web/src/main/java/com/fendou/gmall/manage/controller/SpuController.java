@@ -2,6 +2,7 @@ package com.fendou.gmall.manage.controller;
 
 import com.fendou.gmall.bean.PmsBaseSaleAttr;
 import com.fendou.gmall.bean.PmsProductInfo;
+import com.fendou.gmall.manage.util.ImageUploadUtil;
 import com.fendou.gmall.service.SpuService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,8 @@ public class SpuController {
 
     @RequestMapping("/fileUpload")
     public String fileUpload(@RequestParam("file") MultipartFile multipartFile) {
-
-        return "http://116.62.46.30";
+        String url = ImageUploadUtil.imgUpload(multipartFile);
+        return url;
     }
     @RequestMapping("/saveSpuInfo")
     public String saveSpuInfo(@RequestBody PmsProductInfo pmsProductInfo) {
