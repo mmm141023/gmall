@@ -59,6 +59,8 @@
                 <scope>import</scope>
             </dependency>
 
+            <!--thymeleaf-->
+
             <!-- Apache Dubbo  -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
