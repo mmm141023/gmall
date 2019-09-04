@@ -6,6 +6,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.fendou.gmall.manage.dao")
+@org.mybatis.spring.annotation.MapperScan(basePackages = "com.fendou.gmall.manage.dao")
 public class GmallManageServiceApplication {
 
     public static void main(String[] args) {

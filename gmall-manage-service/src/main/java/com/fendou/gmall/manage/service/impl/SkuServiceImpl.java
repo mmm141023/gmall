@@ -61,7 +61,6 @@ public class SkuServiceImpl implements SkuService {
         PmsSkuInfo pmsSkuInfo = new PmsSkuInfo();
         pmsSkuInfo.setId(skuId);
         PmsSkuInfo pmsSkuInfo1 = pmsSkuInfoMapper.selectOne(pmsSkuInfo);
-
         PmsSkuImage pmsSkuImage = new PmsSkuImage();
         pmsSkuImage.setSkuId(skuId);
         List<PmsSkuImage> select = pmsSkuImageMapper.select(pmsSkuImage);

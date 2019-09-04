@@ -117,15 +117,6 @@
 							<ul>
 								<li th:each="skuImage:${skuInfo?.skuImageList}">
 								 		<img th:src="${skuImage.imgUrl}"/>
-<!--								<li><img src="/img/59ded62eN64a9784c.jpg" /></li>
-								<li><img src="/img/59ded626Ne3c69b70.jpg" /></li>
-								<li><img src="/img/59ded626N7c4cb0a3.jpg" /></li>
-								<li><img src="/img/59ded626Ne3c69b70.jpg" /></li>
-								<li><img src="/img/59ded62dN7e28abc5 (1).jpg" /></li>
-								<li><img src="/img/59ded62cN6e9ac17c.jpg" /></li>
-								<li><img src="/img/59ded620Nfc0ab489.jpg" /></li>
-								<li><img src="/img/59ded60eN3110f3a8.jpg" /></li>
-								<li><img src="/img/59ded62dNfed003a8.jpg" /></li>-->
 								</li>
 							</ul>
 						</div>
@@ -226,36 +217,14 @@
 							<div class="box-attr-2 clear"  th:each="spuSaleAttr:${spuSaleAttrListCheckBySku}">
 								<dl>
 									<dt th:text="${spuSaleAttr.saleAttrName}">选择颜色</dt>
-									<dd  th:class="redborder" th:each="saleAttrValue:${spuSaleAttr.spuSaleAttrValueList}">
+									<!--th:class="redborder"-->
+									<dd th:class="(${saleAttrValue.isChecked}=='1'?'redborder':'')"  th:each="saleAttrValue:${spuSaleAttr.spuSaleAttrValueList}">
 										<div th:value="${saleAttrValue.id}" th:text="${saleAttrValue.saleAttrValueName}">
 											  摩卡金
 										</div>
 									</dd>
 								</dl>
 							</div>
-<!--							<div class="box-attr-2 clear">
-								<dl>
-									<dt>选择版本</dt>
-									<dd>
-										<a href="#">标准版</a>
-									</dd>
-									<dd>
-										<a href="#">套装版</a>
-									</dd>
-								</dl>
-							</div>
-
-							<div class="box-attr-2 clear">
-								<dl>
-									<dt>选择内存</dt>
-									<dd>
-										<a href="#">64GB</a>
-									</dd>
-									<dd>
-										<a href="#">128GB</a>
-									</dd>
-								</dl>
-							</div>-->
 							<br/>
 						</div>
 
