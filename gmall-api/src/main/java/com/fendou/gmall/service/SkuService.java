@@ -11,4 +11,6 @@ import com.fendou.gmall.bean.PmsSkuInfo;
 
 public interface SkuService {
     String saveSkuInfo(PmsSkuInfo pmsSkuInfo);
+
+    PmsSkuInfo getSkuListById(String skuId);
 }
