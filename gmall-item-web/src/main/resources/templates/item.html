@@ -989,9 +989,21 @@
         }
 
         function switchSkuId() {
+            var key = "";
             var saleAttrValueJsonStr = $("#valuesSku").val();
-            alert(saleAttrValueJsonStr);
+			var saleAttrValueList = $(".redborder div");
+            saleAttrValueList.each(function (index,saleAttrValue) {
+                key = key + $(saleAttrValue).attr("value") + "|";
+            })
+            var saleAttrValueJson = JSON.parse(saleAttrValueJsonStr);
+            var sku_id = saleAttrValueJson[key];
+            if (sku_id) {
+                window.location.href = "http://127.0.0.1:8084/" + sku_id + ".html";
+            }else{
+                alert("该商品不还未上架，敬请期待！");
+			}
         }
+
 	</script>
 
 </html>
