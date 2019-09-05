@@ -12,7 +12,10 @@
     <artifactId>gmall-common-util</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>

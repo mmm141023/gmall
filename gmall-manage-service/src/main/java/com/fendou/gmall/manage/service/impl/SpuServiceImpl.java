@@ -6,7 +6,10 @@ import com.fendou.gmall.service.SpuService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SpuServiceImpl class
@@ -27,6 +30,10 @@ public class SpuServiceImpl implements SpuService {
     PmsProductSaleAttrMapper pmsProductSaleAttrMapper;
     @Autowired
     PmsProductSaleAttrValueMapper pmsProductSaleAttrValueMapper;
+    @Autowired
+    PmsSkuInfoMapper pmsSkuInfoMapper;
+    @Autowired
+    PmsSkuSaleAttrValueMapper pmsSkuSaleAttrValueMapper;
     /**
      * 展示商品spu列表
      * @param catalog3Id
@@ -115,5 +122,31 @@ public class SpuServiceImpl implements SpuService {
     public List<PmsProductSaleAttr> SelectSpuSaleAttrListCheckBySku(String productId, String skuId) {
         List<PmsProductSaleAttr> pmsProductSaleAttrs = pmsProductSaleAttrMapper.SelectSpuSaleAttrListCheckBySku(productId,skuId);
         return pmsProductSaleAttrs;
+    }
+
+    /**
+     * 想前台返回包含 sale_attr_value_id对和相对应的skuID的Map映射   例如：252|255|256 ：109
+     * @param spuId
+     * @return
+     */
+    @Override
+    public Map<String, String> getAllSaleAttrListBySpuId(String spuId) {
+        PmsSkuInfo pmsSkuInfo = new PmsSkuInfo();
+        pmsSkuInfo.setProductId(spuId);
+        List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoMapper.select(pmsSkuInfo);
+        Map<String,String> map = new HashMap<>();
+        for (PmsSkuInfo skuInfo : pmsSkuInfos) {
+            String id = skuInfo.getId();
+            PmsSkuSaleAttrValue pmsSkuSaleAttrValue = new PmsSkuSaleAttrValue();
+            pmsSkuSaleAttrValue.setSkuId(id);
+            List<PmsSkuSaleAttrValue> pmsSkuSaleAttrValues = pmsSkuSaleAttrValueMapper.select(pmsSkuSaleAttrValue);
+            String result = "";
+            for (PmsSkuSaleAttrValue skuSaleAttrValue : pmsSkuSaleAttrValues) {
+                String saleAttrValueId = skuSaleAttrValue.getSaleAttrValueId();
+                result += (saleAttrValueId +"|");
+            }
+            map.put(result, id);
+        }
+        return map;
     }
 }

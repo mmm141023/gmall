@@ -16,8 +16,6 @@
         LEFT JOIN pms_sku_sale_attr_value ssav ON sav.id = ssav.sale_attr_value_id
         AND ssav.sku_id = #{skuId}
     </select>
-
-
     <resultMap id="SelectSpuSaleAttrListCheckBySkuMap" type="com.fendou.gmall.bean.PmsProductSaleAttr" autoMapping="true">
         <result column="sa_id" property="id"></result>
         <collection property="spuSaleAttrValueList" ofType="com.fendou.gmall.bean.PmsProductSaleAttrValue" autoMapping="true">

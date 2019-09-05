@@ -6,6 +6,7 @@ import com.fendou.gmall.bean.PmsProductInfo;
 import com.fendou.gmall.bean.PmsProductSaleAttr;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * SpuService class
@@ -28,4 +29,6 @@ public interface SpuService {
     List<PmsProductSaleAttr> spuSaleAttrListCheckBySku(String skuId);
 
     List<PmsProductSaleAttr> SelectSpuSaleAttrListCheckBySku(String productId, String skuId);
+
+    Map<String, String> getAllSaleAttrListBySpuId(String spuId);
 }
