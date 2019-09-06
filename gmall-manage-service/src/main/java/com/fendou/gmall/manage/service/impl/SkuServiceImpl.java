@@ -88,13 +88,24 @@ public class SkuServiceImpl implements SkuService {
         if (StringUtils.isNotBlank(skuInfoJson)){
             pmsSkuInfo= JSON.parseObject(skuInfoJson, PmsSkuInfo.class);
         }else{
-            pmsSkuInfo = getSkuListByIdFromDB(skuId);
-            if (pmsSkuInfo != null) {
-                jedis.set(skuKey, JSON.toJSONString(pmsSkuInfo));
+            String OK = jedis.set("sku:" + skuId + ":lock", "1", "nx", "px", 10);
+            if (StringUtils.isNotBlank(OK) && OK.equals("OK")) {
+                pmsSkuInfo = getSkuListByIdFromDB(skuId);
+                if (pmsSkuInfo != null) {
+                    jedis.set(skuKey, JSON.toJSONString(pmsSkuInfo));
+                }else{
+                    //防止缓存穿透  （访问一个数据库不存在的key，redis中也没有）  就将其访问的key设置为空串并设定过期时间
+                    jedis.setex(skuKey, 60 * 3, JSON.toJSONString(""));
+                }
             }else{
-                //防止缓存穿透  （访问一个数据库不存在的key，redis中也没有）  就将其访问的key设置为空串并设定过期时间
-                jedis.setex(skuKey, 60 * 3, JSON.toJSONString(""));
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return getSkuListById(skuId);
             }
+
         }
         jedis.close();
         return pmsSkuInfo;
