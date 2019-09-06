@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * SkuServiceImpl class
@@ -88,7 +89,8 @@ public class SkuServiceImpl implements SkuService {
         if (StringUtils.isNotBlank(skuInfoJson)){
             pmsSkuInfo= JSON.parseObject(skuInfoJson, PmsSkuInfo.class);
         }else{
-            String OK = jedis.set("sku:" + skuId + ":lock", "1", "nx", "px", 10);
+            String token = UUID.randomUUID().toString();
+            String OK = jedis.set("sku:" + skuId + ":lock", token, "nx", "px", 10 * 1000);
             if (StringUtils.isNotBlank(OK) && OK.equals("OK")) {
                 pmsSkuInfo = getSkuListByIdFromDB(skuId);
                 if (pmsSkuInfo != null) {
@@ -96,6 +98,17 @@ public class SkuServiceImpl implements SkuService {
                 }else{
                     //防止缓存穿透  （访问一个数据库不存在的key，redis中也没有）  就将其访问的key设置为空串并设定过期时间
                     jedis.setex(skuKey, 60 * 3, JSON.toJSONString(""));
+                }
+                //将mysql中的分布式锁释放掉
+
+
+                //将新token与旧token对比
+//                防止分布式中删除其他线程拿到的锁
+//                线程还没有执行到这里的时候，token过期被其他线程拿到，这里如果不加判断就会删除其他线程的锁
+                String nowToken = jedis.get("sku:" + skuId + ":lock");
+                if (StringUtils.isNotBlank(nowToken) && nowToken.equals(token)) {
+                    //可以使用lua脚本在查询刀key时同时删除
+                    jedis.del("sku:" + skuId + ":lock");
                 }
             }else{
                 try {
