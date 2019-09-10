@@ -144,4 +144,23 @@ public class PmsSkuInfo implements Serializable {
     public void setSkuSaleAttrValueList(List<PmsSkuSaleAttrValue> skuSaleAttrValueList) {
         SkuSaleAttrValueList = skuSaleAttrValueList;
     }
+
+
+    @Override
+    public String toString() {
+        return "PmsSkuInfo{" +
+                "id='" + id + '\'' +
+                ", productId='" + productId + '\'' +
+                ", spuId='" + spuId + '\'' +
+                ", price=" + price +
+                ", skuName='" + skuName + '\'' +
+                ", weight=" + weight +
+                ", skuDesc='" + skuDesc + '\'' +
+                ", catalog3Id='" + catalog3Id + '\'' +
+                ", skuDefaultImg='" + skuDefaultImg + '\'' +
+                ", SkuImageList=" + SkuImageList +
+                ", SkuAttrValueList=" + SkuAttrValueList +
+                ", SkuSaleAttrValueList=" + SkuSaleAttrValueList +
+                '}';
+    }
 }

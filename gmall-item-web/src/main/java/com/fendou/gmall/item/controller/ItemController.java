@@ -42,4 +42,6 @@ public class ItemController {
         modelMap.put("spuSaleAttrListCheckBySku", pmsProductSaleAttrs);
         return "item";
     }
+
+
 }

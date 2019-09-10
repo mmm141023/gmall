@@ -123,4 +123,16 @@ public class SkuServiceImpl implements SkuService {
         jedis.close();
         return pmsSkuInfo;
     }
+
+    @Override
+    public List<PmsSkuInfo> getAllSkuInfo() {
+        List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoMapper.selectAll();
+        for (PmsSkuInfo pmsSkuInfo : pmsSkuInfos) {
+            PmsSkuAttrValue pmsSkuAttrValue = new PmsSkuAttrValue();
+            pmsSkuAttrValue.setSkuId(pmsSkuInfo.getId());
+            List<PmsSkuAttrValue> pms = pmsSkuAttrValueMapper.select(pmsSkuAttrValue);
+            pmsSkuInfo.setSkuAttrValueList(pms);
+        }
+        return pmsSkuInfos;
+    }
 }
