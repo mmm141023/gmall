@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class PmsSearchSkuInfo implements Serializable {
-    private String id;
+    private long id;
     private BigDecimal price;
     private String skuName;
     private String skuDesc;
@@ -22,11 +22,11 @@ public class PmsSearchSkuInfo implements Serializable {
     private String productId;
     private List<PmsSkuAttrValue> SkuAttrValueList;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

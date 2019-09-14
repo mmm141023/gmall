@@ -52,7 +52,7 @@ public class MysqlToESController {
         }
 
         for (PmsSearchSkuInfo pmsSearchSkuInfo : pmsSearchSkuInfos) {
-            Index build = new Index.Builder(pmsSearchSkuInfo).index("gmall").type("PmsSkuInfo").id(pmsSearchSkuInfo.getId()).build();
+            Index build = new Index.Builder(pmsSearchSkuInfo).index("gmall").type("PmsSkuInfo").id(pmsSearchSkuInfo.getId() + "").build();
             jestClient.execute(build);
         }
         return "success";
