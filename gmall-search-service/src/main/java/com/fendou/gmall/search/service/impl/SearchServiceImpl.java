@@ -1,15 +1,11 @@
 package com.fendou.gmall.search.service.impl;
 
-import com.fendou.gmall.bean.PmsBaseAttrInfo;
-import com.fendou.gmall.bean.PmsSearchParam;
-import com.fendou.gmall.bean.PmsSearchSkuInfo;
-import com.fendou.gmall.bean.PmsSkuAttrValue;
+import com.fendou.gmall.bean.*;
 import com.fendou.gmall.search.dao.PmsBaseAttrInfoMapper;
 import com.fendou.gmall.service.SearchService;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -39,6 +35,7 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * 根据pmsSearchParam实现查询商品功能
+     *
      * @param pmsSearchParam
      * @return
      */
@@ -74,7 +71,8 @@ public class SearchServiceImpl implements SearchService {
     }
 
     /**
-     * 获得筛选商品列表
+     * 获得筛选商品列表   加入删除点击过的筛选条件使其成为面包屑
+     *
      * @param pmsSearchSkuInfoList
      * @return
      */
@@ -82,7 +80,6 @@ public class SearchServiceImpl implements SearchService {
     public List<PmsBaseAttrInfo> getAttrValueAndAttrValueList(List<PmsSearchSkuInfo> pmsSearchSkuInfoList) {
         // 根据set不可重复的特性存储valueId去重
         Set<String> attrValueIds = new HashSet<>();
-
         for (PmsSearchSkuInfo pmsSearchSkuInfo : pmsSearchSkuInfoList) {
             List<PmsSkuAttrValue> skuAttrValueList = pmsSearchSkuInfo.getSkuAttrValueList();
             for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
@@ -98,6 +95,7 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * 得到urlParam
+     *
      * @param pmsSearchParam
      * @return
      */
@@ -106,36 +104,56 @@ public class SearchServiceImpl implements SearchService {
         String urlParam = "";
         String catalog3Id = pmsSearchParam.getCatalog3Id();
         String keyword = pmsSearchParam.getKeyword();
-        List<PmsSkuAttrValue> skuAttrValueList = pmsSearchParam.getSkuAttrValueList();
+        String[] skuAttrValueList = pmsSearchParam.getValueId();
 
-        if (StringUtils.isNotBlank(catalog3Id)){
-                urlParam += ("catalog3Id=" + catalog3Id);
-        }else {
+        if (StringUtils.isNotBlank(catalog3Id)) {
+            urlParam += ("catalog3Id=" + catalog3Id);
+        } else {
             if (StringUtils.isNotBlank(keyword)) {
                 urlParam += ("keyword=" + keyword);
             }
             if (skuAttrValueList != null) {
-                for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
-                    String valueId = pmsSkuAttrValue.getValueId();
-                    urlParam += ("&valueId=" + valueId);
+                for (String pmsSkuAttrValue : skuAttrValueList) {
+                    urlParam += ("&valueId=" + pmsSkuAttrValue);
                 }
             }
             return urlParam;
         }
         if (StringUtils.isNotBlank(keyword)) {
-                urlParam += ("&keyword=" + keyword);
+            urlParam += ("&keyword=" + keyword);
         }
         if (skuAttrValueList != null) {
-            for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
-                String valueId = pmsSkuAttrValue.getValueId();
-                urlParam += ("&valueId=" + valueId);
+            for (String pmsSkuAttrValue : skuAttrValueList) {
+                urlParam += ("&valueId=" + pmsSkuAttrValue);
             }
         }
         return urlParam;
     }
 
+    @Override
+    public List<PmsBaseAttrInfo> delClickedAttrValue(PmsSearchParam pmsSearchParam, List<PmsBaseAttrInfo> pmsBaseAttrInfos) {
+        Iterator<PmsBaseAttrInfo> iterator = pmsBaseAttrInfos.iterator();
+        String[] valueId = pmsSearchParam.getValueId();
+        if (valueId != null) {
+            while (iterator.hasNext()) {
+                PmsBaseAttrInfo next = iterator.next();
+                List<PmsBaseAttrValue> attrValueList = next.getAttrValueList();
+                for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                    String id = pmsBaseAttrValue.getId();
+                    for (String s : valueId) {
+                        if (s.equals(id)) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+        return pmsBaseAttrInfos;
+    }
+
+
     private String getSearchDsl(PmsSearchParam pmsSearchParam) {
-        List<PmsSkuAttrValue> skuAttrValueList = pmsSearchParam.getSkuAttrValueList();
+        String[] skuAttrValueList = pmsSearchParam.getValueId();
         String keyWord = pmsSearchParam.getKeyword();
         String catalog3Id = pmsSearchParam.getCatalog3Id();
         //jest 的 dsl工具
@@ -145,8 +163,8 @@ public class SearchServiceImpl implements SearchService {
 
         // filter
         if (skuAttrValueList != null) {
-            for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
-                TermQueryBuilder termQueryBuilder = new TermQueryBuilder("SkuAttrValueList.valueId", pmsSkuAttrValue.getValueId());
+            for (String pmsSkuAttrValue : skuAttrValueList) {
+                TermQueryBuilder termQueryBuilder = new TermQueryBuilder("SkuAttrValueList.valueId", pmsSkuAttrValue);
                 boolQueryBuilder.filter(termQueryBuilder);
             }
         }
@@ -156,7 +174,7 @@ public class SearchServiceImpl implements SearchService {
         }
         //must
         if (StringUtils.isNotBlank(keyWord)) {
-            MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName",keyWord);
+            MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName", keyWord);
             boolQueryBuilder.must(matchQueryBuilder);
         }
         //query
@@ -175,4 +193,6 @@ public class SearchServiceImpl implements SearchService {
         searchSourceBuilder.sort("id", SortOrder.DESC);
         return searchSourceBuilder.toString();
     }
+
+
 }

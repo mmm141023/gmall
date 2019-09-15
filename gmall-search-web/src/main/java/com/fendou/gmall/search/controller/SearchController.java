@@ -35,9 +35,11 @@ public class SearchController {
         List<PmsBaseAttrInfo> pmsBaseAttrInfos = searchService.getAttrValueAndAttrValueList(pmsSearchSkuInfoList);
         // 得到urlParam
         String urlParam = searchService.getUrlParam(pmsSearchParam);
-        modelMap.put("urlParam", urlParam);
+        // 去除点击过的属性
+        pmsBaseAttrInfos = searchService.delClickedAttrValue(pmsSearchParam,pmsBaseAttrInfos);
         // 返回前台
         modelMap.put("attrList", pmsBaseAttrInfos);
+        modelMap.put("urlParam", urlParam);
         modelMap.put("skuLsInfoList", pmsSearchSkuInfoList);
         return "list";
     }

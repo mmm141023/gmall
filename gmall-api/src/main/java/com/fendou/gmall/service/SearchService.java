@@ -12,4 +12,6 @@ public interface SearchService {
     List<PmsBaseAttrInfo> getAttrValueAndAttrValueList(List<PmsSearchSkuInfo> pmsSearchSkuInfoList);
 
     String getUrlParam(PmsSearchParam pmsSearchParam);
+
+    List<PmsBaseAttrInfo> delClickedAttrValue(PmsSearchParam pmsSearchParam, List<PmsBaseAttrInfo> pmsBaseAttrInfos);
 }

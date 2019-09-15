@@ -16,7 +16,8 @@ public class PmsSearchParam implements Serializable {
 
     private String catalog3Id;
 
-    private List<PmsSkuAttrValue> SkuAttrValueList;
+
+    private String[] valueId;
 
     public String getKeyword() {
         return keyword;
@@ -34,11 +35,11 @@ public class PmsSearchParam implements Serializable {
         this.catalog3Id = catalog3Id;
     }
 
-    public List<PmsSkuAttrValue> getSkuAttrValueList() {
-        return SkuAttrValueList;
+    public String[] getValueId() {
+        return valueId;
     }
 
-    public void setSkuAttrValueList(List<PmsSkuAttrValue> skuAttrValueList) {
-        SkuAttrValueList = skuAttrValueList;
+    public void setValueId(String[] valueId) {
+        this.valueId = valueId;
     }
 }
