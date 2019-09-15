@@ -1,12 +1,15 @@
 package com.fendou.gmall.search.service.impl;
 
+import com.fendou.gmall.bean.PmsBaseAttrInfo;
 import com.fendou.gmall.bean.PmsSearchParam;
 import com.fendou.gmall.bean.PmsSearchSkuInfo;
 import com.fendou.gmall.bean.PmsSkuAttrValue;
+import com.fendou.gmall.search.dao.PmsBaseAttrInfoMapper;
 import com.fendou.gmall.service.SearchService;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -18,9 +21,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * SearchServiceImpl class
@@ -33,7 +34,14 @@ public class SearchServiceImpl implements SearchService {
 
     @Autowired
     JestClient jestClient;
+    @Autowired
+    PmsBaseAttrInfoMapper pmsBaseAttrInfoMapper;
 
+    /**
+     * 根据pmsSearchParam实现查询商品功能
+     * @param pmsSearchParam
+     * @return
+     */
     @Override
     public List<PmsSearchSkuInfo> list(PmsSearchParam pmsSearchParam) {
         // 从索引库根据相关API查询数据并返回
@@ -62,9 +70,68 @@ public class SearchServiceImpl implements SearchService {
             }
             pmsSearchSkuInfos.add(source);
         }
-
-        System.out.println(pmsSearchSkuInfos.size());
         return pmsSearchSkuInfos;
+    }
+
+    /**
+     * 获得筛选商品列表
+     * @param pmsSearchSkuInfoList
+     * @return
+     */
+    @Override
+    public List<PmsBaseAttrInfo> getAttrValueAndAttrValueList(List<PmsSearchSkuInfo> pmsSearchSkuInfoList) {
+        // 根据set不可重复的特性存储valueId去重
+        Set<String> attrValueIds = new HashSet<>();
+
+        for (PmsSearchSkuInfo pmsSearchSkuInfo : pmsSearchSkuInfoList) {
+            List<PmsSkuAttrValue> skuAttrValueList = pmsSearchSkuInfo.getSkuAttrValueList();
+            for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
+                String valueId = pmsSkuAttrValue.getValueId();
+                attrValueIds.add(valueId);
+            }
+        }
+        // 通过工具类将set集合转化为 用逗号分隔的字符串 以便进行联合查询
+        String join = StringUtils.join(attrValueIds, ",");
+        List<PmsBaseAttrInfo> pmsBaseAttrInfos = pmsBaseAttrInfoMapper.selectAttrValueAndAttrValueList(join);
+        return pmsBaseAttrInfos;
+    }
+
+    /**
+     * 得到urlParam
+     * @param pmsSearchParam
+     * @return
+     */
+    @Override
+    public String getUrlParam(PmsSearchParam pmsSearchParam) {
+        String urlParam = "";
+        String catalog3Id = pmsSearchParam.getCatalog3Id();
+        String keyword = pmsSearchParam.getKeyword();
+        List<PmsSkuAttrValue> skuAttrValueList = pmsSearchParam.getSkuAttrValueList();
+
+        if (StringUtils.isNotBlank(catalog3Id)){
+                urlParam += ("catalog3Id=" + catalog3Id);
+        }else {
+            if (StringUtils.isNotBlank(keyword)) {
+                urlParam += ("keyword=" + keyword);
+            }
+            if (skuAttrValueList != null) {
+                for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
+                    String valueId = pmsSkuAttrValue.getValueId();
+                    urlParam += ("&valueId=" + valueId);
+                }
+            }
+            return urlParam;
+        }
+        if (StringUtils.isNotBlank(keyword)) {
+                urlParam += ("&keyword=" + keyword);
+        }
+        if (skuAttrValueList != null) {
+            for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
+                String valueId = pmsSkuAttrValue.getValueId();
+                urlParam += ("&valueId=" + valueId);
+            }
+        }
+        return urlParam;
     }
 
     private String getSearchDsl(PmsSearchParam pmsSearchParam) {

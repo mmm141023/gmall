@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fendou.gmall.search.dao.PmsBaseAttrInfoMapper">
+    <select id="selectAttrValueAndAttrValueList" resultMap="selectAttrValueAndAttrValueListMap">
+        SELECT
+            ba.* ,ba.id as ba_id , bav.*, bav.id as bav_id
+        FROM
+            pms_base_attr_info ba,
+            pms_base_attr_value bav
+        WHERE
+            bav.id IN (${join})
+        AND bav.attr_id = ba.id
+    </select>
+    <resultMap id="selectAttrValueAndAttrValueListMap" type="com.fendou.gmall.bean.PmsBaseAttrInfo" autoMapping="true">
+        <result column="ba_id" property="id"></result>
+        <collection property="attrValueList" ofType="com.fendou.gmall.bean.PmsBaseAttrValue" autoMapping="true">
+            <result column="bav_id" property="id"></result>
+        </collection>
+    </resultMap>
+</mapper>

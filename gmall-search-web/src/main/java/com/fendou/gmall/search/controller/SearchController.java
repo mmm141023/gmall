@@ -1,5 +1,6 @@
 package com.fendou.gmall.search.controller;
 
+import com.fendou.gmall.bean.PmsBaseAttrInfo;
 import com.fendou.gmall.bean.PmsSearchParam;
 import com.fendou.gmall.bean.PmsSearchSkuInfo;
 import com.fendou.gmall.service.SearchService;
@@ -28,7 +29,15 @@ public class SearchController {
     }
     @RequestMapping("list.html")
     public String list(PmsSearchParam pmsSearchParam, ModelMap modelMap) {
+        // list获得商品列表
         List<PmsSearchSkuInfo> pmsSearchSkuInfoList = searchService.list(pmsSearchParam);
+        // getAttrValueAndAttrValueList获得筛选列表
+        List<PmsBaseAttrInfo> pmsBaseAttrInfos = searchService.getAttrValueAndAttrValueList(pmsSearchSkuInfoList);
+        // 得到urlParam
+        String urlParam = searchService.getUrlParam(pmsSearchParam);
+        modelMap.put("urlParam", urlParam);
+        // 返回前台
+        modelMap.put("attrList", pmsBaseAttrInfos);
         modelMap.put("skuLsInfoList", pmsSearchSkuInfoList);
         return "list";
     }
