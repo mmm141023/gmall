@@ -9,7 +9,9 @@ gmall-manage-web  8081
 
 gmall-search-service 8075
 gmall-search-web 8085
-g
+
+gmall-cart-service 8076
+gmall-cart-web 8086
 
 # gmall-item-service   前台的商品详情服务 8073  其中的service与gmall-manage-service相冲突
 gmall-item-web  前台的商品详情展示 8083
@@ -25,3 +27,5 @@ sa.product_id = sav.product_id
 AND sa.sale_attr_id = sav.sale_attr_id AND sa.product_id = 70
 LEFT JOIN pms_sku_sale_attr_value ssav
 on sav.id = ssav.sale_attr_value_id AND ssav.sku_id = 108
+
+
