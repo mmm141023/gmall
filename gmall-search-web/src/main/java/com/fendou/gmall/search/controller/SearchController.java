@@ -1,6 +1,7 @@
 package com.fendou.gmall.search.controller;
 
 import com.fendou.gmall.bean.PmsBaseAttrInfo;
+import com.fendou.gmall.bean.PmsSearchCromb;
 import com.fendou.gmall.bean.PmsSearchParam;
 import com.fendou.gmall.bean.PmsSearchSkuInfo;
 import com.fendou.gmall.service.SearchService;
@@ -33,6 +34,8 @@ public class SearchController {
         List<PmsSearchSkuInfo> pmsSearchSkuInfoList = searchService.list(pmsSearchParam);
         // getAttrValueAndAttrValueList获得筛选列表
         List<PmsBaseAttrInfo> pmsBaseAttrInfos = searchService.getAttrValueAndAttrValueList(pmsSearchSkuInfoList);
+        // 面包屑 (必须放在删除点击过属性之前)
+        List<PmsSearchCromb> pmsSearchCrombs = searchService.getCrombs(pmsSearchParam,pmsBaseAttrInfos);
         // 得到urlParam
         String urlParam = searchService.getUrlParam(pmsSearchParam);
         // 去除点击过的属性
@@ -41,6 +44,10 @@ public class SearchController {
         modelMap.put("attrList", pmsBaseAttrInfos);
         modelMap.put("urlParam", urlParam);
         modelMap.put("skuLsInfoList", pmsSearchSkuInfoList);
+        if (pmsSearchParam.getKeyword() != null) {
+            modelMap.put("keyword", pmsSearchParam.getKeyword());
+        }
+        modelMap.put("attrValueSelectedList", pmsSearchCrombs);
         return "list";
     }
 }

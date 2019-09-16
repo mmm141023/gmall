@@ -33,6 +33,8 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     PmsBaseAttrInfoMapper pmsBaseAttrInfoMapper;
 
+
+
     /**
      * 根据pmsSearchParam实现查询商品功能
      *
@@ -44,8 +46,6 @@ public class SearchServiceImpl implements SearchService {
         // 从索引库根据相关API查询数据并返回
         String dslStr = getSearchDsl(pmsSearchParam);
         String keyWord = pmsSearchParam.getKeyword();
-        System.out.println(dslStr);
-
         List<PmsSearchSkuInfo> pmsSearchSkuInfos = new ArrayList<>();
 
         Search search = new Search.Builder(dslStr).addIndex("gmall").addType("PmsSkuInfo").build();
@@ -61,6 +61,7 @@ public class SearchServiceImpl implements SearchService {
         for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
             PmsSearchSkuInfo source = hit.source;
             Map<String, List<String>> highlight = hit.highlight;
+            // 从highlight中取出关键字赋值给source 来展示
             if (StringUtils.isNotBlank(keyWord)) {
                 String skuName = highlight.get("skuName").get(0);
                 source.setSkuName(skuName);
@@ -105,7 +106,7 @@ public class SearchServiceImpl implements SearchService {
         String catalog3Id = pmsSearchParam.getCatalog3Id();
         String keyword = pmsSearchParam.getKeyword();
         String[] skuAttrValueList = pmsSearchParam.getValueId();
-
+        // 当为第一个参数时不要&符号，当不是第一个参数时加入&
         if (StringUtils.isNotBlank(catalog3Id)) {
             urlParam += ("catalog3Id=" + catalog3Id);
         } else {
@@ -130,6 +131,13 @@ public class SearchServiceImpl implements SearchService {
         return urlParam;
     }
 
+    /**
+     * 删除已经点击过的筛选条件
+     * 使用iterator迭代器，对集合进行删除操作
+     * @param pmsSearchParam
+     * @param pmsBaseAttrInfos
+     * @return
+     */
     @Override
     public List<PmsBaseAttrInfo> delClickedAttrValue(PmsSearchParam pmsSearchParam, List<PmsBaseAttrInfo> pmsBaseAttrInfos) {
         Iterator<PmsBaseAttrInfo> iterator = pmsBaseAttrInfos.iterator();
@@ -151,7 +159,90 @@ public class SearchServiceImpl implements SearchService {
         return pmsBaseAttrInfos;
     }
 
+    /**
+     * 实现面包屑功能
+     *
+     * @param pmsSearchParam
+     * @param pmsBaseAttrInfos
+     * @return
+     */
+    @Override
+    public List<PmsSearchCromb> getCrombs(PmsSearchParam pmsSearchParam, List<PmsBaseAttrInfo> pmsBaseAttrInfos) {
+        List<PmsSearchCromb> pmsSearchCrombs = new ArrayList<>();
+        String[] valueId = pmsSearchParam.getValueId();
+        if (valueId != null) {
+            for (String s : valueId) {
+                // 每存在一个valueID说明点击了一次筛选条件，需要创建一个面包屑
+                PmsSearchCromb pmsSearchCromb = new PmsSearchCromb();
+                // 必须每次循环都创建一个iterator 否则下次循环拿不到名字。
+                Iterator<PmsBaseAttrInfo> iterator = pmsBaseAttrInfos.iterator();
+                while (iterator.hasNext()) {
+                    PmsBaseAttrInfo next = iterator.next();
+                    List<PmsBaseAttrValue> attrValueList = next.getAttrValueList();
+                    for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                        String id = pmsBaseAttrValue.getId();
+                        if (id.equals(s)) {
+                            pmsSearchCromb.setValueName(pmsBaseAttrValue.getValueName());
+                        }
+                    }
+                }
+                pmsSearchCromb.setValueId(s);
+                pmsSearchCromb.setUrlParam(getUrlParamByCromb(pmsSearchParam, s));
+                pmsSearchCrombs.add(pmsSearchCromb);
+            }
+        }
+        return pmsSearchCrombs;
+    }
 
+    /**
+     * 生成面包屑的urlParam
+     *  if (!s.equals(pmsSkuAttrValue)) {
+     *       urlParam += ("&valueId=" + pmsSkuAttrValue);
+     *     }
+     *  只有当当前面包屑的valueId不等于传来pmsSearchParam中的value时才加入valueID = pmsSkuAttrValue。
+     * @param pmsSearchParam
+     * @param s
+     * @return
+     */
+    private String getUrlParamByCromb(PmsSearchParam pmsSearchParam, String s) {
+        String urlParam = "";
+        String catalog3Id = pmsSearchParam.getCatalog3Id();
+        String keyword = pmsSearchParam.getKeyword();
+        String[] skuAttrValueList = pmsSearchParam.getValueId();
+
+        if (StringUtils.isNotBlank(catalog3Id)) {
+            urlParam += ("catalog3Id=" + catalog3Id);
+        } else {
+            if (StringUtils.isNotBlank(keyword)) {
+                urlParam += ("keyword=" + keyword);
+            }
+            if (skuAttrValueList != null) {
+                for (String pmsSkuAttrValue : skuAttrValueList) {
+                    if (!s.equals(pmsSkuAttrValue)) {
+                        urlParam += ("&valueId=" + pmsSkuAttrValue);
+                    }
+                }
+            }
+            return urlParam;
+        }
+        if (StringUtils.isNotBlank(keyword)) {
+            urlParam += ("&keyword=" + keyword);
+        }
+        if (skuAttrValueList != null) {
+            for (String pmsSkuAttrValue : skuAttrValueList) {
+                if (!s.equals(pmsSkuAttrValue)) {
+                    urlParam += ("&valueId=" + pmsSkuAttrValue);
+                }
+            }
+        }
+        return urlParam;
+    }
+
+    /**
+     * 使用jest的dsl工具对skuAttrValueList / keyWord / catalog3Id进行语句生成
+     * @param pmsSearchParam
+     * @return
+     */
     private String getSearchDsl(PmsSearchParam pmsSearchParam) {
         String[] skuAttrValueList = pmsSearchParam.getValueId();
         String keyWord = pmsSearchParam.getKeyword();
@@ -193,6 +284,4 @@ public class SearchServiceImpl implements SearchService {
         searchSourceBuilder.sort("id", SortOrder.DESC);
         return searchSourceBuilder.toString();
     }
-
-
 }

@@ -1,6 +1,7 @@
 package com.fendou.gmall.service;
 
 import com.fendou.gmall.bean.PmsBaseAttrInfo;
+import com.fendou.gmall.bean.PmsSearchCromb;
 import com.fendou.gmall.bean.PmsSearchParam;
 import com.fendou.gmall.bean.PmsSearchSkuInfo;
 
@@ -14,4 +15,6 @@ public interface SearchService {
     String getUrlParam(PmsSearchParam pmsSearchParam);
 
     List<PmsBaseAttrInfo> delClickedAttrValue(PmsSearchParam pmsSearchParam, List<PmsBaseAttrInfo> pmsBaseAttrInfos);
+
+    List<PmsSearchCromb> getCrombs(PmsSearchParam pmsSearchParam, List<PmsBaseAttrInfo> pmsBaseAttrInfos);
 }
