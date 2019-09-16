@@ -28,10 +28,12 @@ public class AttrServiceImpl implements AttrService {
     AttrValueMapper attrValueMapper;
     @Override
     public List<PmsBaseAttrInfo> attrInfoList(String catalog3Id) {
+        //根据catalog3Id来查询pmsBaseAttrInfos
         PmsBaseAttrInfo pmsBaseAttrInfo = new PmsBaseAttrInfo();
         pmsBaseAttrInfo.setCatalog3Id(catalog3Id);
         List<PmsBaseAttrInfo> pmsBaseAttrInfos = attrInfoMapper.select(pmsBaseAttrInfo);
         for (PmsBaseAttrInfo baseAttrInfo : pmsBaseAttrInfos) {
+            // 根据属性id来查找对应的属性值的集合封装进入每一个baseAttrInfo
             PmsBaseAttrValue pmsBaseAttrValue = new PmsBaseAttrValue();
             pmsBaseAttrValue.setAttrId(baseAttrInfo.getId());
             List<PmsBaseAttrValue> pmsBaseAttrValues = attrValueMapper.select(pmsBaseAttrValue);

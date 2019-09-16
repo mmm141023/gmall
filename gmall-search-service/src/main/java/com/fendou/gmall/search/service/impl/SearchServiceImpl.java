@@ -34,7 +34,6 @@ public class SearchServiceImpl implements SearchService {
     PmsBaseAttrInfoMapper pmsBaseAttrInfoMapper;
 
 
-
     /**
      * 根据pmsSearchParam实现查询商品功能
      *
@@ -52,6 +51,7 @@ public class SearchServiceImpl implements SearchService {
 
         SearchResult execute = null;
         try {
+            //execute 即为执行dsl语句后的结果
             execute = jestClient.execute(search);
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +72,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     /**
-     * 获得筛选商品列表   加入删除点击过的筛选条件使其成为面包屑
+     * 获得筛选商品列表
      *
      * @param pmsSearchSkuInfoList
      * @return
@@ -134,6 +134,7 @@ public class SearchServiceImpl implements SearchService {
     /**
      * 删除已经点击过的筛选条件
      * 使用iterator迭代器，对集合进行删除操作
+     *
      * @param pmsSearchParam
      * @param pmsBaseAttrInfos
      * @return
@@ -196,10 +197,11 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * 生成面包屑的urlParam
-     *  if (!s.equals(pmsSkuAttrValue)) {
-     *       urlParam += ("&valueId=" + pmsSkuAttrValue);
-     *     }
-     *  只有当当前面包屑的valueId不等于传来pmsSearchParam中的value时才加入valueID = pmsSkuAttrValue。
+     * if (!s.equals(pmsSkuAttrValue)) {
+     * urlParam += ("&valueId=" + pmsSkuAttrValue);
+     * }
+     * 只有当当前面包屑的valueId不等于传来pmsSearchParam中的value时才加入valueID = pmsSkuAttrValue。
+     *
      * @param pmsSearchParam
      * @param s
      * @return
@@ -240,6 +242,7 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * 使用jest的dsl工具对skuAttrValueList / keyWord / catalog3Id进行语句生成
+     *
      * @param pmsSearchParam
      * @return
      */
