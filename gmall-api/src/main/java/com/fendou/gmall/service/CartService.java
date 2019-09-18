@@ -21,4 +21,6 @@ public interface CartService {
     String saveOmsCartItem(OmsCartItem omsCartItem, String skuId, String memberId);
 
     String saveOmsCartItemFromCache(List<OmsCartItem> omsCartItems1, String skuId, String memberId);
+
+    void flushCartCache(String memberId);
 }

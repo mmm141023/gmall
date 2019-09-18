@@ -1,16 +1,22 @@
 package com.fendou.gmall.cart.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.fendou.gmall.bean.OmsCartItem;
 import com.fendou.gmall.bean.PmsSkuInfo;
 import com.fendou.gmall.cart.service.dao.OmsCartItemMapper;
 import com.fendou.gmall.service.CartService;
+import com.fendou.gmall.util.RedisUtil;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CartServiceImpl class
@@ -23,6 +29,8 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     OmsCartItemMapper omsCartItemMapper;
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public OmsCartItem transSkuInfoToCartItem(PmsSkuInfo skuListById, BigDecimal quantity) {
@@ -56,7 +64,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String saveOmsCartItem(OmsCartItem omsCartItem, String skuId, String memberId) {
-
         OmsCartItem omsCartItem1 = new OmsCartItem();
         omsCartItem1.setMemberId(memberId);
         omsCartItem1.setProductSkuId(skuId);
@@ -86,5 +93,25 @@ public class CartServiceImpl implements CartService {
             }
         }
         return result;
+    }
+
+    @Override
+    public void flushCartCache(String memberId) {
+        OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setMemberId(memberId);
+        List<OmsCartItem> select = omsCartItemMapper.select(omsCartItem);
+        Map<String,String> map = new HashMap<>();
+        for (OmsCartItem cartItem : select) {
+            map.put(cartItem.getProductSkuId(), JSON.toJSONString(cartItem));
+        }
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+            jedis.hmset("user:" + memberId + ":cart", map);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            jedis.close();
+        }
     }
 }

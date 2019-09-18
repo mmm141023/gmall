@@ -8,6 +8,7 @@ import com.fendou.gmall.service.SkuService;
 import com.fendou.gmall.util.CookieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +32,7 @@ public class CartController {
     SkuService skuService;
     @Reference
     CartService cartService;
+
 
     @RequestMapping("/addToCart")
     public String addToCart(String skuId, BigDecimal quantity, ModelMap modelMap, HttpServletResponse response, HttpServletRequest request) {
@@ -74,13 +75,19 @@ public class CartController {
             String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
             List<OmsCartItem> omsCartItems1 = JSON.parseArray(cartListCookie, OmsCartItem.class);
             // 缓存中数据也存入数据库
+            if (omsCartItems1 == null) {
+                omsCartItems1 = new ArrayList<>();
+            }
             omsCartItems1.add(omsCartItem);
             String result1 = cartService.saveOmsCartItemFromCache(omsCartItems1, skuId, memberId);
-
             // 清除cookie
             CookieUtils.deleteCookie(request, response, "cartListCookie");
             //加入缓存
+            cartService.flushCartCache(memberId);
         }
+
+
+
         modelMap.put("skuInfo", skuListById);
         modelMap.put("skuNum", quantity);
         return "success";
