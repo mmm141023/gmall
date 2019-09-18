@@ -23,4 +23,10 @@ public interface CartService {
     String saveOmsCartItemFromCache(List<OmsCartItem> omsCartItems1, String skuId, String memberId);
 
     void flushCartCache(String memberId);
+
+    List<OmsCartItem> cartList(String memberId);
+
+    void checkCart(OmsCartItem omsCartItem);
+
+    BigDecimal getTotalAmount(List<OmsCartItem> omsCartItems);
 }

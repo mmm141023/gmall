@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -33,7 +34,6 @@ public class CartController {
     @Reference
     CartService cartService;
 
-
     @RequestMapping("/addToCart")
     public String addToCart(String skuId, BigDecimal quantity, ModelMap modelMap, HttpServletResponse response, HttpServletRequest request) {
         // 购物车商品信息可能不止一条，设置为集合
@@ -43,7 +43,6 @@ public class CartController {
         // 将skuInfo封装为购物车对象
         //设置memberId 来代表用户是否登录
         String memberId = "1";
-
         if (StringUtils.isBlank(memberId)) {
             OmsCartItem omsCartItem = cartService.transSkuInfoToCartItem(skuListById, quantity);
             // 用户未登录 购物车存入cookie
@@ -85,19 +84,45 @@ public class CartController {
             //加入缓存
             cartService.flushCartCache(memberId);
         }
-
-
-
         modelMap.put("skuInfo", skuListById);
         modelMap.put("skuNum", quantity);
         return "success";
     }
-
     @RequestMapping("/cartList")
     public String cartList(ModelMap modelMap, HttpServletRequest request) {
-        String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
-        List<OmsCartItem> omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
+        String memberId = "1";
+        List<OmsCartItem> omsCartItems = new ArrayList<>();
+        if (StringUtils.isNotBlank(memberId)) {
+            // 用户登录 ，从缓存中拿到数据
+            omsCartItems = cartService.cartList(memberId);
+        }else {
+            // 用户未登录 从cookie中拿数据
+            String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
+            omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
+            for (OmsCartItem omsCartItem : omsCartItems) {
+                omsCartItem.setTotalPrice(omsCartItem.getPrice().multiply(omsCartItem.getQuantity()));
+            }
+        }
+        BigDecimal totalAmount = cartService.getTotalAmount(omsCartItems);
+        modelMap.put("totalAmount",totalAmount);
         modelMap.put("cartList",omsCartItems);
         return "cartList";
+    }
+
+    @RequestMapping("/checkCart")
+    public String checkCart(String isChecked, String skuId,ModelMap modelMap) {
+
+        String memberId = "1";
+        OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setMemberId(memberId);
+        omsCartItem.setIsChecked(isChecked);
+        omsCartItem.setProductSkuId(skuId);
+        cartService.checkCart(omsCartItem);
+        // 从缓存中拿到最新数据
+        List<OmsCartItem> omsCartItems = cartService.cartList(memberId);
+        BigDecimal totalAmount = cartService.getTotalAmount(omsCartItems);
+        modelMap.put("totalAmount",totalAmount);
+        modelMap.put("cartList",omsCartItems);
+        return "CartListInner";
     }
 }

@@ -79,7 +79,7 @@
             </ul>
         </div>
 
-        <div th:include="CartListInner"></div>
+        <div id="CartListInner" th:include="CartListInner"></div>
 
     </div>
 </div>
@@ -163,7 +163,6 @@
 
     function checkSku( chkbox){
        var skuId= $(chkbox).attr("value");
-       alert(skuId);
        var checked=$(chkbox).prop("checked");
        var isCheckedFlag="0";
        if(checked){
@@ -171,7 +170,7 @@
        }
         var param="isChecked="+isCheckedFlag+"&"+"skuId="+skuId;
         $.post("checkCart",param,function (data) {
-            sumSumPrice();
+            $("#CartListInner").html(data);
         });
 
     }

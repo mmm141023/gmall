@@ -13,10 +13,7 @@ import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * CartServiceImpl class
@@ -107,11 +104,68 @@ public class CartServiceImpl implements CartService {
         Jedis jedis = null;
         try {
             jedis = redisUtil.getJedis();
+            jedis.del("user:" + memberId + ":cart");
             jedis.hmset("user:" + memberId + ":cart", map);
         }catch (Exception e) {
             e.printStackTrace();
         }finally {
             jedis.close();
         }
+    }
+
+    @Override
+    public List<OmsCartItem> cartList(String memberId) {
+        Jedis jedis = null;
+        // 先从缓存中获取数据 如果没有该数据 则从mysql数据库获取数据 然后在存入缓存
+        List<OmsCartItem> omsCartItems = new ArrayList<>();
+        try{
+            jedis = redisUtil.getJedis();
+            List<String> hvals = jedis.hvals("user:" + memberId + ":cart");
+            if (hvals != null){
+                for (String hval : hvals) {
+                    OmsCartItem omsCartItem = JSON.parseObject(hval, OmsCartItem.class);
+                    omsCartItem.setTotalPrice(omsCartItem.getPrice().multiply(omsCartItem.getQuantity()));
+                    omsCartItems.add(omsCartItem);
+                }
+            }else{
+                // 说明redis中没有数据
+                OmsCartItem omsCartItem = new OmsCartItem();
+                omsCartItem.setMemberId(memberId);
+                List<OmsCartItem> select = omsCartItemMapper.select(omsCartItem);
+                for (OmsCartItem cartItem : select) {
+                    cartItem.setTotalPrice(cartItem.getPrice().multiply(cartItem.getQuantity()));
+                    omsCartItems.add(cartItem);
+                }
+
+                // 再将数据加入redis
+                flushCartCache(memberId);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            jedis.close();
+        }
+        return omsCartItems;
+    }
+
+    @Override
+    public void checkCart(OmsCartItem omsCartItem) {
+        Example example = new Example(OmsCartItem.class);
+        example.createCriteria().andEqualTo("memberId", omsCartItem.getMemberId()).andEqualTo("productSkuId", omsCartItem.getProductSkuId());
+        omsCartItemMapper.updateByExampleSelective(omsCartItem, example);
+        // 更新后刷新缓存
+        flushCartCache(omsCartItem.getMemberId());
+    }
+
+    @Override
+    public BigDecimal getTotalAmount(List<OmsCartItem> omsCartItems) {
+        BigDecimal totalAmount = new BigDecimal("0");
+        for (OmsCartItem omsCartItem : omsCartItems) {
+            if (omsCartItem.getIsChecked().equals("1")) {
+                BigDecimal totalPrice = omsCartItem.getTotalPrice();
+                totalAmount = totalAmount.add(totalPrice);
+            }
+        }
+        return totalAmount;
     }
 }
