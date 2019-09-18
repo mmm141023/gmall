@@ -72,9 +72,12 @@ public class CartController {
             // 用户已登录 购物车存入db
             // 封装为购物车对象
             OmsCartItem omsCartItem = cartService.transSkuInfoToCartItemWhenLogin(skuListById, quantity,memberId);
-
-            //存入数据库
-            String result = cartService.saveOmsCartItem(omsCartItem, skuId, memberId);
+            // 获取缓存中的数据
+            String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
+            List<OmsCartItem> omsCartItems1 = JSON.parseArray(cartListCookie, OmsCartItem.class);
+            // 缓存中数据也存入数据库
+            omsCartItems1.add(omsCartItem);
+            String result1 = cartService.saveOmsCartItemFromCache(omsCartItems1, skuId, memberId);
             //加入缓存
         }
         modelMap.put("skuInfo", skuListById);

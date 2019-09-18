@@ -10,6 +10,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * CartServiceImpl class
@@ -57,10 +58,12 @@ public class CartServiceImpl implements CartService {
     public String saveOmsCartItem(OmsCartItem omsCartItem, String skuId, String memberId) {
 
         OmsCartItem omsCartItem1 = new OmsCartItem();
-        omsCartItem.setMemberId(memberId);
-        omsCartItem.setProductSkuId(skuId);
-        OmsCartItem omsCartItem2 = omsCartItemMapper.selectOne(omsCartItem);
+        omsCartItem1.setMemberId(memberId);
+        omsCartItem1.setProductSkuId(skuId);
+        OmsCartItem omsCartItem2 = omsCartItemMapper.selectOne(omsCartItem1);
         if (omsCartItem2 == null) {
+            omsCartItem.setMemberId(memberId);
+            omsCartItem.setMemberNickname("maomao");
             omsCartItemMapper.insertSelective(omsCartItem);
         }else {
             Example example = new Example(OmsCartItem.class);
@@ -68,5 +71,20 @@ public class CartServiceImpl implements CartService {
             omsCartItemMapper.updateByExampleSelective(omsCartItem, example);
         }
         return "success";
+    }
+
+    @Override
+    public String saveOmsCartItemFromCache(List<OmsCartItem> omsCartItems1, String skuId, String memberId) {
+        String result = "";
+        if (omsCartItems1 == null) {
+            result = "failed";
+            return result;
+        }else {
+            for (OmsCartItem omsCartItem : omsCartItems1) {
+                String productSkuId = omsCartItem.getProductSkuId();
+                result = saveOmsCartItem(omsCartItem, productSkuId, memberId);
+            }
+        }
+        return result;
     }
 }

@@ -4,6 +4,7 @@ import com.fendou.gmall.bean.OmsCartItem;
 import com.fendou.gmall.bean.PmsSkuInfo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * CartService class
@@ -18,4 +19,6 @@ public interface CartService {
     OmsCartItem transSkuInfoToCartItemWhenLogin(PmsSkuInfo skuListById, BigDecimal quantity, String memberId);
 
     String saveOmsCartItem(OmsCartItem omsCartItem, String skuId, String memberId);
+
+    String saveOmsCartItemFromCache(List<OmsCartItem> omsCartItems1, String skuId, String memberId);
 }
