@@ -40,8 +40,6 @@ public class CartController {
         // 从skuService中根据skuId查询info
         PmsSkuInfo skuListById = skuService.getSkuListById(skuId);
         // 将skuInfo封装为购物车对象
-
-
         //设置memberId 来代表用户是否登录
         String memberId = "1";
 
@@ -78,6 +76,9 @@ public class CartController {
             // 缓存中数据也存入数据库
             omsCartItems1.add(omsCartItem);
             String result1 = cartService.saveOmsCartItemFromCache(omsCartItems1, skuId, memberId);
+
+            // 清除cookie
+            CookieUtils.deleteCookie(request, response, "cartListCookie");
             //加入缓存
         }
         modelMap.put("skuInfo", skuListById);
@@ -87,12 +88,9 @@ public class CartController {
 
     @RequestMapping("/cartList")
     public String cartList(ModelMap modelMap, HttpServletRequest request) {
-
         String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
         List<OmsCartItem> omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
-
         modelMap.put("cartList",omsCartItems);
-
         return "cartList";
     }
 }
