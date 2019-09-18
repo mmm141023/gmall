@@ -100,8 +100,6 @@ public class SkuServiceImpl implements SkuService {
                     jedis.setex(skuKey, 60 * 3, JSON.toJSONString(""));
                 }
                 //将mysql中的分布式锁释放掉
-
-
                 //将新token与旧token对比
 //                防止分布式中删除其他线程拿到的锁
 //                线程还没有执行到这里的时候，token过期被其他线程拿到，这里如果不加判断就会删除其他线程的锁

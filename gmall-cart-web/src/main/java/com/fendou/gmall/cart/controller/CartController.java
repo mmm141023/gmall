@@ -3,6 +3,7 @@ package com.fendou.gmall.cart.controller;
 import com.alibaba.fastjson.JSON;
 import com.fendou.gmall.bean.OmsCartItem;
 import com.fendou.gmall.bean.PmsSkuInfo;
+import com.fendou.gmall.service.CartService;
 import com.fendou.gmall.service.SkuService;
 import com.fendou.gmall.util.CookieUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,36 +30,23 @@ public class CartController {
 
     @Reference
     SkuService skuService;
+    @Reference
+    CartService cartService;
 
     @RequestMapping("/addToCart")
     public String addToCart(String skuId, BigDecimal quantity, ModelMap modelMap, HttpServletResponse response, HttpServletRequest request) {
         // 购物车商品信息可能不止一条，设置为集合
         List<OmsCartItem> omsCartItems = new ArrayList<>();
-
         // 从skuService中根据skuId查询info
         PmsSkuInfo skuListById = skuService.getSkuListById(skuId);
         // 将skuInfo封装为购物车对象
-        OmsCartItem omsCartItem = new OmsCartItem();
-        omsCartItem.setId("");
-        omsCartItem.setProductId(skuListById.getProductId());
-        omsCartItem.setProductSkuId(skuListById.getId());
-        omsCartItem.setQuantity(quantity);
-        omsCartItem.setPrice(skuListById.getPrice());
-        omsCartItem.setSp1("颜色");
-        omsCartItem.setSp2("重量");
-        omsCartItem.setSp3("容量");
-        omsCartItem.setProductPic(skuListById.getSkuDefaultImg());
-        omsCartItem.setProductName(skuListById.getSkuName());
-        omsCartItem.setProductSkuCode("123123123123123123123");
-        omsCartItem.setCreateDate(new Date());
-        omsCartItem.setModifyDate(new Date());
-        omsCartItem.setDeleteStatus(0);
-        omsCartItem.setProductCategoryId(skuListById.getCatalog3Id());
+
 
         //设置memberId 来代表用户是否登录
-        String memberId = "";
+        String memberId = "1";
 
         if (StringUtils.isBlank(memberId)) {
+            OmsCartItem omsCartItem = cartService.transSkuInfoToCartItem(skuListById, quantity);
             // 用户未登录 购物车存入cookie
             String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
             if (StringUtils.isNotBlank(cartListCookie)) {
@@ -82,6 +70,12 @@ public class CartController {
             }
         }else {
             // 用户已登录 购物车存入db
+            // 封装为购物车对象
+            OmsCartItem omsCartItem = cartService.transSkuInfoToCartItemWhenLogin(skuListById, quantity,memberId);
+
+            //存入数据库
+            String result = cartService.saveOmsCartItem(omsCartItem, skuId, memberId);
+            //加入缓存
         }
         modelMap.put("skuInfo", skuListById);
         modelMap.put("skuNum", quantity);
@@ -89,8 +83,12 @@ public class CartController {
     }
 
     @RequestMapping("/cartList")
-    public String cartList() {
+    public String cartList(ModelMap modelMap, HttpServletRequest request) {
 
+        String cartListCookie = CookieUtils.getCookieValue(request, "cartListCookie", true);
+        List<OmsCartItem> omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
+
+        modelMap.put("cartList",omsCartItems);
 
         return "cartList";
     }
