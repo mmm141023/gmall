@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="stylesheet" type="text/css" href="JD_sass/JD1.css"/>
@@ -9,7 +9,7 @@
 	<body>
 		<!--顶部logo-->
 		<header>
-			<a href="http://www.baidu.com"><img src="JD_img/logo.png"/></a><p>欢迎登录</p>
+			<a href="javascript:;"><img src="JD_img/logo.png"/></a><p>欢迎登录</p>
 			<div class="top-1">
 				<img src="JD_img/4de5019d2404d347897dee637895d02b_06.png"/><span>登录页面,调查问卷</span>
 			</div>
@@ -59,16 +59,16 @@
 					<ul>
 						<li class="top_1">
 							<img src="JD_img/user_03.png" class="err_img1"/>
-							<input type="text" placeholder=" 邮箱/用户名/已验证手机"  class="user"/>
+							<input type="text" id="username" name="username" placeholder=" 邮箱/用户名/已验证手机"  class="user"/>
 						</li>
 						<li>
 							<img src="JD_img/user_06.png" class="err_img2"/>
-							<input type="password" placeholder=" 密码" class="password"/>
+							<input type="password" id="password" name="password" placeholder=" 密码" class="password"/>
 						</li>
 						<li class="bri">
 							<a href="">忘记密码</a>
 						</li>
-						<li class="ent"><button class="btn2"><a class="a">登 &nbsp; &nbsp;录</a></button></li>
+						<li class="ent"><button class="btn2"><a class="a" onclick="loginSubmit();">登 &nbsp; &nbsp;录</a></button></li>
 					</ul>
 				</div>
 			<div class="si_out">
@@ -123,7 +123,7 @@
 			</ul>
 			<span>Copyright  &copy;  2004-2017  京东JD.com 版权所有</span>
 		</footer>
-		
+	<input id="returnUrl" type="hidden" th:value="${returnUrl}"/>
 	</body>
 	<script type="text/javascript">
 			var alDiv = document.getElementsByClassName('tab');
@@ -156,7 +156,7 @@
 					err_img1.src='JD_img/img11.png';
 					err_img2.src='JD_img/img22.png';
 				}else{
-					var a = document.getElementsByClassName("a")[0].href= "http://www.baidu.com";
+					// var a = document.getElementsByClassName("a")[0].href= "http://www.baidu.com";
 				}user.onfocus=function(){
 				err_img1.src='JD_img/grow1.png';
 				user.style.border='1px solid #999';
@@ -175,6 +175,13 @@
 			}
 			}
 			
-			
+			function loginSubmit() {
+				var username = $("#username").val();
+                var password = $("#password").val();
+                var returnUrl = $("#returnUrl").val();
+                $.post("/login",{username:username,password:password},function (token) {
+					window.location.href=returnUrl + "?token=" + token;
+                })
+            }
 	</script>
 </html>

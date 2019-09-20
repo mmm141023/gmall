@@ -1,6 +1,7 @@
 package com.fendou.gmall.cart.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fendou.gmall.annotation.LoginRequired;
 import com.fendou.gmall.bean.OmsCartItem;
 import com.fendou.gmall.bean.PmsSkuInfo;
 import com.fendou.gmall.service.CartService;
