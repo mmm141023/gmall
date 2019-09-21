@@ -42,6 +42,9 @@ public class ItemController {
         modelMap.put("spuSaleAttrListCheckBySku", pmsProductSaleAttrs);
         return "item";
     }
-
+    @RequestMapping("/index")
+    public String index() {
+        return "item";
+    }
 
 }

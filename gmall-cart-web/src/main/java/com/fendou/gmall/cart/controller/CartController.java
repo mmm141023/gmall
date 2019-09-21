@@ -9,9 +9,7 @@ import com.fendou.gmall.service.SkuService;
 import com.fendou.gmall.util.CookieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -36,6 +34,7 @@ public class CartController {
     CartService cartService;
 
     @RequestMapping("/addToCart")
+    @LoginRequired(loginSuccess = false)
     public String addToCart(String skuId, BigDecimal quantity, ModelMap modelMap, HttpServletResponse response, HttpServletRequest request) {
         // 购物车商品信息可能不止一条，设置为集合
         List<OmsCartItem> omsCartItems = new ArrayList<>();
@@ -90,6 +89,7 @@ public class CartController {
         return "success";
     }
     @RequestMapping("/cartList")
+
     public String cartList(ModelMap modelMap, HttpServletRequest request) {
         String memberId = "1";
         List<OmsCartItem> omsCartItems = new ArrayList<>();
@@ -111,6 +111,7 @@ public class CartController {
     }
 
     @RequestMapping("/checkCart")
+    @LoginRequired(loginSuccess = true)
     public String checkCart(String isChecked, String skuId,ModelMap modelMap) {
 
         String memberId = "1";
