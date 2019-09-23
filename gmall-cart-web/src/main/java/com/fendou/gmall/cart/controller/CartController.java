@@ -42,7 +42,7 @@ public class CartController {
         PmsSkuInfo skuListById = skuService.getSkuListById(skuId);
         // 将skuInfo封装为购物车对象
         //设置memberId 来代表用户是否登录
-        String memberId = "1";
+        String memberId =(String) request.getAttribute("memberId");
         if (StringUtils.isBlank(memberId)) {
             OmsCartItem omsCartItem = cartService.transSkuInfoToCartItem(skuListById, quantity);
             // 用户未登录 购物车存入cookie
@@ -91,7 +91,7 @@ public class CartController {
     @RequestMapping("/cartList")
 
     public String cartList(ModelMap modelMap, HttpServletRequest request) {
-        String memberId = "1";
+        String memberId =(String) request.getAttribute("memberId");
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         if (StringUtils.isNotBlank(memberId)) {
             // 用户登录 ，从缓存中拿到数据
@@ -112,9 +112,9 @@ public class CartController {
 
     @RequestMapping("/checkCart")
     @LoginRequired(loginSuccess = true)
-    public String checkCart(String isChecked, String skuId,ModelMap modelMap) {
+    public String checkCart(String isChecked, String skuId,ModelMap modelMap,HttpServletRequest request) {
 
-        String memberId = "1";
+        String memberId =(String) request.getAttribute("memberId");
         OmsCartItem omsCartItem = new OmsCartItem();
         omsCartItem.setMemberId(memberId);
         omsCartItem.setIsChecked(isChecked);
