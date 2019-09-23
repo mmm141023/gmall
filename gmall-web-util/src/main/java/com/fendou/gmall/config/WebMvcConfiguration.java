@@ -12,7 +12,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer{
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor).addPathPatterns("/**").excludePathPatterns("/static/**");
+        registry.addInterceptor(authInterceptor).addPathPatterns("/**").excludePathPatterns("/index/css/**","/index/img/**","/index/js/**","/index/json/**"
+        ,"/list/css/**","/list/font/**","/list/image/**","/list/img/**","/list/js/**","/bootstrap/**","/css/**","/image/**","/img/**","/js/**","/scss/**"
+        ,"/JD_img/**","/JD_js/**","/JD_sass/**");
 
     }
 }
