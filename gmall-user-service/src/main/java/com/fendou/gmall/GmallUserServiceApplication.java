@@ -1,4 +1,4 @@
-package com.fendou.gmall.user;
+package com.fendou.gmall;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

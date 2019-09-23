@@ -12,6 +12,9 @@ import java.util.List;
  */
 
 public interface UserService {
-    public List<UmsMember> getAllUser();
-    public List<UmsMember> getAllUser2();
+    UmsMember queryUmsMemberOne(UmsMember umsMember);
+
+    void saveUserInfoCache(UmsMember umsMemberOne);
+
+    UmsMember queryFromCache(UmsMember umsMember);
 }

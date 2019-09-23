@@ -180,7 +180,11 @@
                 var password = $("#password").val();
                 var returnUrl = $("#returnUrl").val();
                 $.post("/login",{username:username,password:password},function (token) {
-					window.location.href=returnUrl + "?token=" + token;
+                    if (token == "failed") {
+                        alert("用户名或者密码错误,请重新输入！")
+					}else {
+                        window.location.href=returnUrl + "?token=" + token;
+					}
                 })
             }
 	</script>

@@ -1,5 +1,6 @@
 package com.fendou.gmall.search.controller;
 
+import com.fendou.gmall.annotation.LoginRequired;
 import com.fendou.gmall.bean.PmsBaseAttrInfo;
 import com.fendou.gmall.bean.PmsSearchCromb;
 import com.fendou.gmall.bean.PmsSearchParam;
@@ -25,9 +26,11 @@ public class SearchController {
     SearchService searchService;
 
     @RequestMapping("/index")
+    @LoginRequired(loginSuccess = false)
     public String index() {
         return "index";
     }
+
     @RequestMapping("list.html")
     public String list(PmsSearchParam pmsSearchParam, ModelMap modelMap) {
         // list获得商品列表
