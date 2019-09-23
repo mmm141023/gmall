@@ -27,6 +27,34 @@ public class UmsMember implements Serializable {
     private int luckeyCount;
     private int historyIntegration;
 
+    private String source_uid;
+    private String access_code;
+    private String access_token;
+
+    public String getSource_uid() {
+        return source_uid;
+    }
+
+    public void setSource_uid(String source_uid) {
+        this.source_uid = source_uid;
+    }
+
+    public String getAccess_code() {
+        return access_code;
+    }
+
+    public void setAccess_code(String access_code) {
+        this.access_code = access_code;
+    }
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
+    }
+
     public String getId() {
         return id;
     }

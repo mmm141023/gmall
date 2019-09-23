@@ -10,7 +10,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * UserServiceImpl class
@@ -87,5 +89,45 @@ public class UserServiceImpl implements UserService {
             jedis.close();
         }
         return umsMember1;
+    }
+
+    @Override
+    public UmsMember saveWeiBoUserInfo(Map<String, String> user_map) {
+        String access_token = user_map.get("access_token");
+        String code = user_map.get("code");
+
+
+        // 将信息存入数据库
+        UmsMember umsMember = new UmsMember();
+        umsMember.setSource_uid(user_map.get("idstr"));
+        umsMember.setAccess_code(code);
+        umsMember.setAccess_token(access_token);
+        umsMember.setNickname(user_map.get("screen_name"));
+        umsMember.setPhone("12345678979");
+        umsMember.setMemberLevelId("4");
+        umsMember.setStatus(1);
+        umsMember.setCreateTime(new Date());
+        umsMember.setIcon(user_map.get("avatar_large"));
+        String gender = user_map.get("gender");
+        if (gender.equals("m")) {
+            umsMember.setGender(1);
+        }else if (gender.equals("f")) {
+            umsMember.setGender(2);
+        }else {
+            umsMember.setGender(0);
+        }
+        umsMember.setBirthday(new Date());
+        umsMember.setCity(user_map.get("location"));
+        umsMember.setJob("程序员");
+        umsMember.setPersonalizedSignature(user_map.get("description"));
+        umsMember.setSourceType(2);
+        umsMember.setIntegration(0);
+        umsMember.setGrowth(0);
+        umsMember.setLuckeyCount(0);
+        umsMember.setHistoryIntegration(0);
+
+
+
+        return null;
     }
 }
