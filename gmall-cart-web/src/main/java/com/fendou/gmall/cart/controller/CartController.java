@@ -89,7 +89,7 @@ public class CartController {
         return "success";
     }
     @RequestMapping("/cartList")
-
+    @LoginRequired(loginSuccess = false)
     public String cartList(ModelMap modelMap, HttpServletRequest request) {
         String memberId =(String) request.getAttribute("memberId");
         List<OmsCartItem> omsCartItems = new ArrayList<>();
