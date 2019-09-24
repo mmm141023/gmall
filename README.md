@@ -13,6 +13,9 @@ gmall-search-web 8085
 gmall-cart-service 8076
 gmall-cart-web 8086
 
+gmall-order-service 8078
+gmall-order-web 8088
+
 # gmall-item-service   前台的商品详情服务 8073  其中的service与gmall-manage-service相冲突
 gmall-item-web  前台的商品详情展示 8084
 gmall-passport-web 8082

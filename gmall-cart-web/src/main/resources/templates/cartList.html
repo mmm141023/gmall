@@ -150,14 +150,14 @@
 <script type="text/javascript">
 
      function toTrade(){
-         window.location.href="http://localhost:8087/toTrade";
+         window.location.href="http://localhost:8088/toTrade";
     }
     function toItem(skuId) {
         window.location.href="http://localhost:8084/"+skuId+".html";
     }
 
     function login(){
-      var s = encodeURIComponent("http://cart.gmall.com:8087/cartList");
+      var s = encodeURIComponent("http://localhost:8087/cartList");
        window.location.href="http://passport.atguigu.com/index?originUrl="+s;
     }
 

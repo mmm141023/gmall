@@ -109,7 +109,6 @@ public class PassportController {
 
     @RequestMapping("/vlogin")
     public String vlogin(String code){
-
         Map<String,String> user_map = getWeiBoUserInfo(code);
         UmsMember umsMember = userService.saveWeiBoUserInfo(user_map);
         String salt = "dsfasdfsDAFsadsadDSDDCVeawSDSDsadsacw18182654891215";
