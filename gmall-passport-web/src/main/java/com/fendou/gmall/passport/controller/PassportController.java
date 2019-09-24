@@ -112,9 +112,11 @@ public class PassportController {
 
         Map<String,String> user_map = getWeiBoUserInfo(code);
         UmsMember umsMember = userService.saveWeiBoUserInfo(user_map);
-
-
-        return "redirect:http://localhost:8085/index";
+        String salt = "dsfasdfsDAFsadsadDSDDCVeawSDSDsadsacw18182654891215";
+        String key = "maochaoyingGmall";
+        // 制作token
+        String token = makeToken(salt, key, umsMember);
+        return "redirect:http://localhost:8085/index?token=" + token;
     }
 
     private Map<String, String> getWeiBoUserInfo(String code) {

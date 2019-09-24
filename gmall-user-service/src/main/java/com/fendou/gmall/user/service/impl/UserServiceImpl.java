@@ -3,15 +3,15 @@ package com.fendou.gmall.user.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.fendou.gmall.bean.UmsMember;
 import com.fendou.gmall.service.UserService;
-import com.fendou.gmall.user.dao.UserMapper;
+import com.fendou.gmall.user.dao.UmsMemberMapper;
 import com.fendou.gmall.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +25,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserMapper userMapper;
+    UmsMemberMapper umsMemberMapper;
     @Autowired
     RedisUtil redisUtil;
     /**
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UmsMember queryUmsMemberOne(UmsMember umsMember) {
-        UmsMember umsMember1 = userMapper.selectOne(umsMember);
+        UmsMember umsMember1 = umsMemberMapper.selectOne(umsMember);
         return umsMember1;
     }
 
@@ -96,7 +96,6 @@ public class UserServiceImpl implements UserService {
         String access_token = user_map.get("access_token");
         String code = user_map.get("code");
 
-
         // 将信息存入数据库
         UmsMember umsMember = new UmsMember();
         umsMember.setSource_uid(user_map.get("idstr"));
@@ -105,29 +104,38 @@ public class UserServiceImpl implements UserService {
         umsMember.setNickname(user_map.get("screen_name"));
         umsMember.setPhone("12345678979");
         umsMember.setMemberLevelId("4");
-        umsMember.setStatus(1);
+        umsMember.setStatus("1");
         umsMember.setCreateTime(new Date());
         umsMember.setIcon(user_map.get("avatar_large"));
         String gender = user_map.get("gender");
         if (gender.equals("m")) {
-            umsMember.setGender(1);
+            umsMember.setGender("1");
         }else if (gender.equals("f")) {
-            umsMember.setGender(2);
+            umsMember.setGender("2");
         }else {
-            umsMember.setGender(0);
+            umsMember.setGender("0");
         }
         umsMember.setBirthday(new Date());
         umsMember.setCity(user_map.get("location"));
         umsMember.setJob("程序员");
         umsMember.setPersonalizedSignature(user_map.get("description"));
-        umsMember.setSourceType(2);
-        umsMember.setIntegration(0);
-        umsMember.setGrowth(0);
-        umsMember.setLuckeyCount(0);
-        umsMember.setHistoryIntegration(0);
+        umsMember.setSourceType("2");
+        umsMember.setIntegration("0");
+        umsMember.setGrowth("0");
+        umsMember.setLuckeyCount("0");
+        umsMember.setHistoryIntegration("0");
 
-
-
-        return null;
+        // 查询数据库中有没有该数据
+        UmsMember umsMember1 = new UmsMember();
+        umsMember1.setSource_uid(user_map.get("idstr"));
+        UmsMember umsMember2 = umsMemberMapper.selectOne(umsMember1);
+        if (umsMember2 == null) {
+            umsMemberMapper.insertSelective(umsMember);
+        }else{
+            Example example = new Example(UmsMember.class);
+            example.createCriteria().andEqualTo("source_uid", user_map.get("idstr"));
+            umsMemberMapper.updateByExampleSelective(umsMember, example);
+        }
+        return umsMember;
     }
 }

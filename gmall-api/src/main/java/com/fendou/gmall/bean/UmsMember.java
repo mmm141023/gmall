@@ -13,47 +13,24 @@ public class UmsMember implements Serializable {
     private String password;
     private String nickname;
     private String phone;
-    private int status;
+    private String status;
     private Date createTime;
     private String icon;
-    private int gender;
+    private String gender;
     private Date birthday;
     private String city;
     private String job;
     private String personalizedSignature;
-    private int sourceType;
-    private int integration;
-    private int growth;
-    private int luckeyCount;
-    private int historyIntegration;
+    private String sourceType;
+    private String integration;
+    private String growth;
+    private String luckeyCount;
+    private String historyIntegration;
 
     private String source_uid;
     private String access_code;
     private String access_token;
 
-    public String getSource_uid() {
-        return source_uid;
-    }
-
-    public void setSource_uid(String source_uid) {
-        this.source_uid = source_uid;
-    }
-
-    public String getAccess_code() {
-        return access_code;
-    }
-
-    public void setAccess_code(String access_code) {
-        this.access_code = access_code;
-    }
-
-    public String getAccess_token() {
-        return access_token;
-    }
-
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
-    }
 
     public String getId() {
         return id;
@@ -103,11 +80,11 @@ public class UmsMember implements Serializable {
         this.phone = phone;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -127,11 +104,11 @@ public class UmsMember implements Serializable {
         this.icon = icon;
     }
 
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -167,43 +144,67 @@ public class UmsMember implements Serializable {
         this.personalizedSignature = personalizedSignature;
     }
 
-    public int getSourceType() {
+    public String getSourceType() {
         return sourceType;
     }
 
-    public void setSourceType(int sourceType) {
+    public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
     }
 
-    public int getIntegration() {
+    public String getIntegration() {
         return integration;
     }
 
-    public void setIntegration(int integration) {
+    public void setIntegration(String integration) {
         this.integration = integration;
     }
 
-    public int getGrowth() {
+    public String getGrowth() {
         return growth;
     }
 
-    public void setGrowth(int growth) {
+    public void setGrowth(String growth) {
         this.growth = growth;
     }
 
-    public int getLuckeyCount() {
+    public String getLuckeyCount() {
         return luckeyCount;
     }
 
-    public void setLuckeyCount(int luckeyCount) {
+    public void setLuckeyCount(String luckeyCount) {
         this.luckeyCount = luckeyCount;
     }
 
-    public int getHistoryIntegration() {
+    public String getHistoryIntegration() {
         return historyIntegration;
     }
 
-    public void setHistoryIntegration(int historyIntegration) {
+    public void setHistoryIntegration(String historyIntegration) {
         this.historyIntegration = historyIntegration;
+    }
+
+    public String getSource_uid() {
+        return source_uid;
+    }
+
+    public void setSource_uid(String source_uid) {
+        this.source_uid = source_uid;
+    }
+
+    public String getAccess_code() {
+        return access_code;
+    }
+
+    public void setAccess_code(String access_code) {
+        this.access_code = access_code;
+    }
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
     }
 }
