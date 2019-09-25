@@ -7,6 +7,7 @@ import com.fendou.gmall.service.UserService;
 import com.fendou.gmall.util.HttpclientUtil;
 import com.fendou.gmall.util.JwtUtil;
 import io.jsonwebtoken.Jwt;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.utils.HttpClientUtils;
@@ -42,6 +43,9 @@ public class PassportController {
     @RequestMapping("/index")
     public String index(HttpServletRequest request, ModelMap modelMap) {
         String returnUrl = request.getParameter("returnUrl");
+        if (StringUtils.isBlank(returnUrl)) {
+            returnUrl = "http://localhost:8085/index";
+        }
         modelMap.put("returnUrl", returnUrl);
         return "index";
     }
