@@ -27,17 +27,17 @@ public class OmsOrder implements Serializable {
     private BigDecimal integrationAmount;
     private BigDecimal couponAmount;
     private BigDecimal discountAmount;
-    private int payType;
-    private int sourceType;
-    private int status;
-    private int orderType;
+    private String payType;
+    private String sourceType;
+    private String status;
+    private String orderType;
     private String deliveryCompany;
     private String deliverySn;
-    private int autoConfirmDay;
-    private int integration;
-    private int growth;
+    private String autoConfirmDay;
+    private String integration;
+    private String growth;
     private String promotionInfo;
-    private int billType;
+    private String billType;
     private String billHeader;
     private String billContent;
     private String billReceiverPhone;
@@ -50,9 +50,9 @@ public class OmsOrder implements Serializable {
     private String receiverRegion;
     private String receiverDetailAddress;
     private String note;
-    private int confirmStatus;
-    private int deleteStatus;
-    private int useIntegration;
+    private String confirmStatus;
+    private String deleteStatus;
+    private String useIntegration;
     private Date paymentTime;
     private Date deliveryTime;
     private Date receiveTime;
@@ -61,14 +61,6 @@ public class OmsOrder implements Serializable {
 
     @Transient
     List<OmsOrderItem> omsOrderItems;
-
-    public List<OmsOrderItem> getOmsOrderItems() {
-        return omsOrderItems;
-    }
-
-    public void setOmsOrderItems(List<OmsOrderItem> omsOrderItems) {
-        this.omsOrderItems = omsOrderItems;
-    }
 
     public String getId() {
         return id;
@@ -174,35 +166,35 @@ public class OmsOrder implements Serializable {
         this.discountAmount = discountAmount;
     }
 
-    public int getPayType() {
+    public String getPayType() {
         return payType;
     }
 
-    public void setPayType(int payType) {
+    public void setPayType(String payType) {
         this.payType = payType;
     }
 
-    public int getSourceType() {
+    public String getSourceType() {
         return sourceType;
     }
 
-    public void setSourceType(int sourceType) {
+    public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getOrderType() {
+    public String getOrderType() {
         return orderType;
     }
 
-    public void setOrderType(int orderType) {
+    public void setOrderType(String orderType) {
         this.orderType = orderType;
     }
 
@@ -222,27 +214,27 @@ public class OmsOrder implements Serializable {
         this.deliverySn = deliverySn;
     }
 
-    public int getAutoConfirmDay() {
+    public String getAutoConfirmDay() {
         return autoConfirmDay;
     }
 
-    public void setAutoConfirmDay(int autoConfirmDay) {
+    public void setAutoConfirmDay(String autoConfirmDay) {
         this.autoConfirmDay = autoConfirmDay;
     }
 
-    public int getIntegration() {
+    public String getIntegration() {
         return integration;
     }
 
-    public void setIntegration(int integration) {
+    public void setIntegration(String integration) {
         this.integration = integration;
     }
 
-    public int getGrowth() {
+    public String getGrowth() {
         return growth;
     }
 
-    public void setGrowth(int growth) {
+    public void setGrowth(String growth) {
         this.growth = growth;
     }
 
@@ -254,11 +246,11 @@ public class OmsOrder implements Serializable {
         this.promotionInfo = promotionInfo;
     }
 
-    public int getBillType() {
+    public String getBillType() {
         return billType;
     }
 
-    public void setBillType(int billType) {
+    public void setBillType(String billType) {
         this.billType = billType;
     }
 
@@ -358,27 +350,27 @@ public class OmsOrder implements Serializable {
         this.note = note;
     }
 
-    public int getConfirmStatus() {
+    public String getConfirmStatus() {
         return confirmStatus;
     }
 
-    public void setConfirmStatus(int confirmStatus) {
+    public void setConfirmStatus(String confirmStatus) {
         this.confirmStatus = confirmStatus;
     }
 
-    public int getDeleteStatus() {
+    public String getDeleteStatus() {
         return deleteStatus;
     }
 
-    public void setDeleteStatus(int deleteStatus) {
+    public void setDeleteStatus(String deleteStatus) {
         this.deleteStatus = deleteStatus;
     }
 
-    public int getUseIntegration() {
+    public String getUseIntegration() {
         return useIntegration;
     }
 
-    public void setUseIntegration(int useIntegration) {
+    public void setUseIntegration(String useIntegration) {
         this.useIntegration = useIntegration;
     }
 
@@ -420,5 +412,13 @@ public class OmsOrder implements Serializable {
 
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
+    }
+
+    public List<OmsOrderItem> getOmsOrderItems() {
+        return omsOrderItems;
+    }
+
+    public void setOmsOrderItems(List<OmsOrderItem> omsOrderItems) {
+        this.omsOrderItems = omsOrderItems;
     }
 }

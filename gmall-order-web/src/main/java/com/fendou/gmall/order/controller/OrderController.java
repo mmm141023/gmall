@@ -2,6 +2,7 @@ package com.fendou.gmall.order.controller;
 
 import com.fendou.gmall.annotation.LoginRequired;
 import com.fendou.gmall.bean.OmsCartItem;
+import com.fendou.gmall.bean.OmsOrder;
 import com.fendou.gmall.bean.OmsOrderItem;
 import com.fendou.gmall.bean.UmsMemberReceiveAddress;
 import com.fendou.gmall.service.CartService;
@@ -52,15 +53,16 @@ public class OrderController {
     }
 
     @RequestMapping("/submitOrder")
-    public String submitOrder() {
-
-
-
-
-
-
-
-
+    @LoginRequired(loginSuccess = true)
+    public String submitOrder(String deliveryAddressId, HttpServletRequest request) {
+        String memberId =(String) request.getAttribute("memberId");
+        // 根据deliveryAddressId查询地址信息
+        UmsMemberReceiveAddress umsMemberReceiveAddress = orderService.getUmsMemberReceiveAddressById(deliveryAddressId);
+        // 拿到购物车List
+        List<OmsCartItem> omsCartItems = cartService.cartList(memberId);
+        // 将选中的购物车物品封装为order对象
+        List<OmsOrderItem> omsOrderItems = orderService.castCartItemToOrderItem(omsCartItems);
+        OmsOrder omsOrder = orderService.generateOmsOrder(omsOrderItems, umsMemberReceiveAddress, memberId, omsCartItems);
         return null;
     }
 }

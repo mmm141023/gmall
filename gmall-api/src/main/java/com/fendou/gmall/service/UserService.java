@@ -20,4 +20,6 @@ public interface UserService {
     UmsMember queryFromCache(UmsMember umsMember);
 
     UmsMember saveWeiBoUserInfo(Map<String, String> user_map);
+
+    String getUsernameByMemberId(String memberId);
 }

@@ -61,7 +61,7 @@
 			<div class="top-3">
 				<ul >
 				 <li class=".address default selected" th:each="userAddress:${userAddressList}"  >
-					 <input   name="deliveryAddress" type="radio"  value=""  th:checked="${userAddress.defaultStatus}=='1'">
+					 <input   name="deliveryAddress" type="radio"  th:value="${userAddress.id}"  th:checked="${userAddress.defaultStatus}=='1'">
 					<span  th:text="${userAddress.name}" >收件人AAAA </span><span th:text="${userAddress.detailAddress}"   >具体地址111 </span>
 				 </li>
 				</ul>
@@ -119,20 +119,15 @@
 		</div>
 
 		<form action="./submitOrder" method="post" id="orderForm">
-			<input name="deliveryAddress" id="deliveryAddress" type="hidden"/>
+			<input name="deliveryAddressId" id="deliveryAddress" type="hidden"/>
 			<input name="tradeCode" type="hidden"  th:value="${tradeCode}"  />
 		</form>
 		<script>
             $(function() {
 
                 $("#submitButton").click(function () {
-                   $("#consignee").val($("input[type='radio']:checked").next().text()) ;
-                   $("#deliveryAddress").val( $("input[type='radio']:checked").next().next().text());
-                   $("#paymentWay").val("ONLINE");
-                   $("#orderComment").val($("#orderCommentPage").val());
-                   console.log($("#orderForm").html());
+                   $("#deliveryAddress").val( $("input[type='radio']:checked").val());
                    $("#orderForm").submit();
-
                 });
 
 

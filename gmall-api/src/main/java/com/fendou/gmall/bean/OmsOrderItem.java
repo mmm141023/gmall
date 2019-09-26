@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 public class OmsOrderItem implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String orderId;
     private String orderSn;

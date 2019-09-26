@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
     UmsMemberMapper umsMemberMapper;
     @Autowired
     RedisUtil redisUtil;
+
     /**
      * 查询数据库是否存在umsMember
      * @param umsMember
@@ -137,5 +138,13 @@ public class UserServiceImpl implements UserService {
             umsMemberMapper.updateByExampleSelective(umsMember, example);
         }
         return umsMember;
+    }
+
+    @Override
+    public String getUsernameByMemberId(String memberId) {
+        UmsMember umsMember = new UmsMember();
+        umsMember.setId(memberId);
+        UmsMember umsMember1 = umsMemberMapper.selectOne(umsMember);
+        return umsMember1.getUsername();
     }
 }
