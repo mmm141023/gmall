@@ -134,7 +134,6 @@ public class OrderServiceImpl implements OrderService {
         // 存入OmsOrder表
         omsOrderMapper.insertSelective(omsOrder);
         // 删除购物车
-
         for (OmsOrderItem omsOrderItem : omsOrderItems) {
             omsOrderItem.setOrderId(omsOrder.getId());
             //存入orderIterm表

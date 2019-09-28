@@ -19,6 +19,9 @@ gmall-order-web 8088
 # gmall-item-service   前台的商品详情服务 8073  其中的service与gmall-manage-service相冲突
 gmall-item-web  前台的商品详情展示 8084
 gmall-passport-web 8082
+
+
+gmall-payment 8089    //将服务层和web层写在一起。
 # 销售属性高亮选择的sql
 
 SELECT 

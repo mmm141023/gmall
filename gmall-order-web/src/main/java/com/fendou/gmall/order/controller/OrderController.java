@@ -11,6 +11,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -63,6 +64,11 @@ public class OrderController {
         // 将选中的购物车物品封装为order对象
         List<OmsOrderItem> omsOrderItems = orderService.castCartItemToOrderItem(omsCartItems);
         OmsOrder omsOrder = orderService.generateOmsOrder(omsOrderItems, umsMemberReceiveAddress, memberId, omsCartItems);
-        return null;
+        // 获得总价格
+        BigDecimal totalAmount = omsOrder.getTotalAmount();
+        // 订单号
+        String orderSn = omsOrder.getOrderSn();
+
+        return "redirect:http://localhost:8089/index?totalAmount=" + totalAmount + "&orderSn=" + orderSn;
     }
 }
