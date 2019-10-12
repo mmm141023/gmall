@@ -71,4 +71,10 @@ public class OrderController {
 
         return "redirect:http://localhost:8089/index?totalAmount=" + totalAmount + "&orderSn=" + orderSn;
     }
+
+    @RequestMapping("/orderList")
+    @LoginRequired(loginSuccess = true)
+    public String orderList() {
+        return "";
+    }
 }
